@@ -13,10 +13,14 @@ public class Main {
                 matrix[i][j] = sc.nextInt();
             }
         }
+        int cons = sc.nextInt();
+        matrix = multyArray(matrix, cons);
+        out(matrix);
+        /*
         int rows1 = sc.nextInt();
         int columns1 = sc.nextInt();
 
-        int[][] matrix1 = new int[rows][columns];
+        int[][] matrix1 = new int[rows1][columns1];
         for (int i = 0; i < rows1; i++) {
             for (int j = 0; j < columns1; j++) {
                 matrix1[i][j] = sc.nextInt();
@@ -31,6 +35,24 @@ public class Main {
                 }
                 System.out.println();
             }
+        } */
+    }
+
+    private static int[][] multyArray(int[][] matrix, int cons) {
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                matrix[i][j] = matrix[i][j] * cons;
+            }
+        }
+        return matrix;
+    }
+
+    private static void out(int[][] matrix) {
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                System.out.print(matrix[i][j] + " ");
+            }
+            System.out.println();
         }
     }
 }
