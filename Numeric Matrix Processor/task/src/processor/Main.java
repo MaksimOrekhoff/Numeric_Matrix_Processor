@@ -20,6 +20,7 @@ public class Main {
             System.out.print("1. Add matrices\n" +
                     "2. Multiply matrix to a constant\n" +
                     "3. Multiply matrices\n" +
+                    "4. Transpose matrix\n" +
                     "0. Exit\n" +
                     "Your choice: ");
             choice = sc.nextInt();
@@ -33,6 +34,9 @@ public class Main {
                 case 3:
                     multiplyMatrix();
                     break;
+                case 4:
+                    transposeMatrix();
+                    break;
                 case 0:
                     state = false;
                     break;
@@ -41,6 +45,97 @@ public class Main {
 
             }
         }
+    }
+
+    private static void transposeMatrix() {
+        System.out.println("1. Main diagonal\n" +
+                "2. Side diagonal\n" +
+                "3. Vertical line\n" +
+                "4. Horizontal line");
+
+        int transpose = sc.nextInt();
+
+        switch (transpose) {
+            case 1:
+                mainDiagonal();
+                break;
+            case 2:
+                sideDiagonal();
+                break;
+            case 3:
+                verticalLine();
+                break;
+            case 4:
+                horizontalLine();
+                break;
+        }
+
+    }
+
+    private static void sideDiagonal() {
+        System.out.println("Enter matrix size: ");
+        rows = sc.nextInt();
+        columns = sc.nextInt();
+        System.out.println("Enter matrix:");
+        matrix = matrixFilling(rows, columns);
+        matrix1 = new double[rows][columns];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                if (i + j == matrix[0].length - 1) {
+                    matrix1[i][j] = matrix[i][j];
+                } else {
+                    matrix1[i][j] = matrix[matrix.length - 1 - j][matrix[0].length - 1 - i];
+                }
+            }
+        }
+        out(matrix1);
+    }
+
+    private static void horizontalLine() {
+        System.out.println("Enter matrix size: ");
+        rows = sc.nextInt();
+        columns = sc.nextInt();
+        System.out.println("Enter matrix:");
+        matrix = matrixFilling(rows, columns);
+        matrix1 = new double[rows][columns];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                matrix1[i][j] = matrix[matrix.length - 1 - i][j];
+            }
+        }
+        out(matrix1);
+    }
+
+    private static void verticalLine() {
+        System.out.println("Enter matrix size: ");
+        rows = sc.nextInt();
+        columns = sc.nextInt();
+        System.out.println("Enter matrix:");
+        matrix = matrixFilling(rows, columns);
+        matrix1 = new double[rows][columns];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                matrix1[i][j] = matrix[i][matrix[0].length - 1 - j];
+            }
+        }
+        out(matrix1);
+
+    }
+
+    private static void mainDiagonal() {
+        System.out.println("Enter matrix size: ");
+        rows = sc.nextInt();
+        columns = sc.nextInt();
+        System.out.println("Enter matrix:");
+        matrix = matrixFilling(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = i + 1; j < columns; j++) {
+                double temp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = temp;
+            }
+        }
+        out(matrix);
     }
 
     private static void multiplyMatrix() {
@@ -80,9 +175,9 @@ public class Main {
             }
             out(newMatrix);
         } else {
-                System.out.println("ERROR");
-            }
+            System.out.println("ERROR");
         }
+    }
 
     private static void addMatrices() {
         System.out.println("Enter size of first matrix: ");
@@ -131,7 +226,7 @@ public class Main {
     }
 
     private static double[][] matrixFilling(int rows, int columns) {
-       double[][] matrix = new double[rows][columns];
+        double[][] matrix = new double[rows][columns];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 matrix[i][j] = sc.nextDouble();
@@ -141,6 +236,7 @@ public class Main {
     }
 
     private static void out(double[][] matrix) {
+        System.out.println("The result is:");
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
                 System.out.print(matrix[i][j] + " ");
