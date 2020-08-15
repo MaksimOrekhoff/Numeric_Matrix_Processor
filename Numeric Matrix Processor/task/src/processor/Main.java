@@ -21,6 +21,8 @@ public class Main {
                     "2. Multiply matrix to a constant\n" +
                     "3. Multiply matrices\n" +
                     "4. Transpose matrix\n" +
+                    "5. Calculate a determinant\n" +
+                    "6. Inverse matrix\n" +
                     "0. Exit\n" +
                     "Your choice: ");
             choice = sc.nextInt();
@@ -37,6 +39,12 @@ public class Main {
                 case 4:
                     transposeMatrix();
                     break;
+                case 5:
+                    calculateADeterminant();
+                    break;
+                case 6:
+                    out(performInverseMatrix());
+                    break;
                 case 0:
                     state = false;
                     break;
@@ -45,6 +53,64 @@ public class Main {
 
             }
         }
+    }
+
+    public static double performDeterminant(double[][] matrix) {
+        double determinant = 0;
+        if (matrix.length == 1) {
+            return matrix[0][0];
+        }
+        for (int i = 0; i < matrix[0].length; i++) {
+            double[][] nm = performMinor(matrix, 0, i);
+            determinant += Math.pow(-1, i + 2) * matrix[0][i] * performDeterminant(nm);
+        }
+        return determinant;
+    }
+
+    public static double[][] performInverseMatrix() {
+        System.out.println("Enter matrix size: ");
+        rows = sc.nextInt();
+        columns = sc.nextInt();
+        System.out.println("Enter matrix:");
+        matrix = matrixFilling(rows, columns);
+        double[][] inverseMatrix = new double[matrix.length][matrix[0].length];
+        double det = performDeterminant(matrix);
+        double[][] tMatrix = transposeMainDiagonal(matrix);
+        for (int i = 0; i < inverseMatrix.length; i++) {
+            for (int j = 0; j < inverseMatrix[i].length; j++) {
+                inverseMatrix[i][j] = Math.pow(-1, i + j) * performDeterminant(performMinor(tMatrix, i, j)) / det;
+            }
+        }
+        return inverseMatrix;
+    }
+
+    private static double[][] performMinor(double[][] matrix, int row, int column) {
+        double[][] newMatrix = new double[matrix.length - 1][matrix[0].length - 1];
+        int ni = 0, nj = 0;
+        for (int i = 0; i < matrix.length; i++) {
+            if (row == i) {
+                continue;
+            }
+            for (int j = 0; j < matrix[0].length; j++) {
+                if (column == j) {
+                    continue;
+                }
+                newMatrix[ni][nj++] = matrix[i][j];
+            }
+            ni++;
+            nj = 0;
+        }
+        return newMatrix;
+    }
+
+    private static void calculateADeterminant() {
+        System.out.println("Enter matrix size: ");
+        rows = sc.nextInt();
+        columns = sc.nextInt();
+        System.out.println("Enter matrix:");
+        matrix = matrixFilling(rows, columns);
+        System.out.println(performDeterminant(matrix));
+
     }
 
     private static void transposeMatrix() {
@@ -57,7 +123,11 @@ public class Main {
 
         switch (transpose) {
             case 1:
-                mainDiagonal();
+                System.out.println("Enter matrix size: ");
+                int rows = sc.nextInt();
+                int columns = sc.nextInt();
+                System.out.println("Enter matrix:");
+                out(transposeMainDiagonal(matrixFilling(rows, columns)));
                 break;
             case 2:
                 sideDiagonal();
@@ -122,20 +192,16 @@ public class Main {
 
     }
 
-    private static void mainDiagonal() {
-        System.out.println("Enter matrix size: ");
-        rows = sc.nextInt();
-        columns = sc.nextInt();
-        System.out.println("Enter matrix:");
-        matrix = matrixFilling(rows, columns);
-        for (int i = 0; i < rows; i++) {
-            for (int j = i + 1; j < columns; j++) {
+    private static double[][] transposeMainDiagonal(double[][] matrix) {
+
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = i + 1; j < matrix[0].length; j++) {
                 double temp = matrix[i][j];
                 matrix[i][j] = matrix[j][i];
                 matrix[j][i] = temp;
             }
         }
-        out(matrix);
+        return matrix;
     }
 
     private static void multiplyMatrix() {
@@ -170,7 +236,6 @@ public class Main {
                     for (int k = 0; k < rows; k++) {
                         newMatrix[i][j] += matrix[i][k] * matrix1[k][j];
                     }
-
                 }
             }
             out(newMatrix);
@@ -210,13 +275,13 @@ public class Main {
         columns = sc.nextInt();
         System.out.println("Enter matrix: ");
         matrix = matrixFilling(rows, columns);
-        int cons = sc.nextInt();
-        matrix = multyConst(matrix, cons);
+        double cons = sc.nextInt();
+        matrix = multiConst(matrix, cons);
         System.out.println("The multiplication result is: ");
         out(matrix);
     }
 
-    private static double[][] multyConst(double[][] matrix, int cons) {
+    private static double[][] multiConst(double[][] matrix, double cons) {
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
                 matrix[i][j] = matrix[i][j] * cons;
@@ -226,10 +291,12 @@ public class Main {
     }
 
     private static double[][] matrixFilling(int rows, int columns) {
+        Scanner scanner = new Scanner(System.in);
         double[][] matrix = new double[rows][columns];
         for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                matrix[i][j] = sc.nextDouble();
+            String[] row = scanner.nextLine().split(" ");
+            for (int j = 0; j < row.length && j < columns; j++) {
+                matrix[i][j] = Double.parseDouble(row[j]);
             }
         }
         return matrix;
@@ -239,9 +306,11 @@ public class Main {
         System.out.println("The result is:");
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
-                System.out.print(matrix[i][j] + " ");
+                String s = String.format("%6s", String.format("%.3f", matrix[i][j]));
+                System.out.print(s + " ");
             }
             System.out.println();
+
         }
     }
 
